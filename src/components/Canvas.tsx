@@ -1,11 +1,8 @@
 import { Canvas } from "@react-three/fiber";
 import {
-  useGLTF,
-  MeshTransmissionMaterial,
   Environment,
   Lightformer,
   OrbitControls,
-  Center,
   Text,
 } from "@react-three/drei";
 import {
@@ -13,9 +10,11 @@ import {
   EffectComposer,
   N8AO,
   ToneMapping,
+  TiltShift2
 } from "@react-three/postprocessing";
 
 import Logo from "./_Logo";
+import Particles from "./_Particles"
 
 const _ = () => {
   return (
@@ -25,15 +24,9 @@ const _ = () => {
     >
       <color attach="background" args={["#000000"]} />
       <ambientLight intensity={0.4} />
-      {/* <spotLight
-        position={[10, 10, 10]}
-        angle={0.15}
-        penumbra={1}
-        intensity={1}
-        castShadow
-      /> */}
 
       <Logo />
+      <Particles count={500} />
       <Text
         font="/fonts/TTHovesPro-Medium.ttf"
         fontSize={2.5}
@@ -44,11 +37,6 @@ const _ = () => {
         <meshBasicMaterial attach="material" color={"white"} />
       </Text>
 
-      {/* <EffectComposer multisampling={8}>
-        <N8AO distanceFalloff={1} aoRadius={1} intensity={4} />
-        <TiltShift2 blur={0.1} />
-      </EffectComposer> */}
-
       <EffectComposer>
         <Bloom mipmapBlur luminanceThreshold={1} intensity={2} />
         <N8AO aoRadius={0.5} intensity={2.5} />
@@ -58,6 +46,7 @@ const _ = () => {
           middleGrey={0.5}
           maxLuminance={16}
         />
+        <TiltShift2 blur={0.05} />
       </EffectComposer>
 
       <Environment resolution={256}>

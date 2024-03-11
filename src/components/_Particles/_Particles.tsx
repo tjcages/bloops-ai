@@ -7,7 +7,7 @@ import fragmentShader from "./shader/particles.frag.glsl";
 // @ts-expect-error - no types for glsl
 import vertexShader from "./shader/particles.vert.glsl";
 
-const radius = 3;
+const radius = 25;
 
 const _ = ({ count }: { count: number }) => {
   const points = useRef() as any;
@@ -19,11 +19,11 @@ const _ = ({ count }: { count: number }) => {
     for (let i = 0; i < count; i++) {
       const distance = Math.sqrt(Math.random()) * radius;
       const theta = THREE.MathUtils.randFloatSpread(360);
-      const phi = THREE.MathUtils.randFloatSpread(360);
+      const phi = THREE.MathUtils.randFloatSpread(90);
 
       const x = distance * Math.sin(theta) * Math.cos(phi);
       const y = distance * Math.sin(theta) * Math.sin(phi);
-      const z = distance * Math.cos(theta);
+      const z = distance * Math.cos(theta) * Math.sin(phi);
 
       positions.set([x, y, z], i * 3);
     }
@@ -34,23 +34,23 @@ const _ = ({ count }: { count: number }) => {
   const uniforms = useMemo(
     () => ({
       uTime: {
-        value: 0.0
+        value: 0.0,
       },
       uRadius: {
-        value: radius
-      }
+        value: radius,
+      },
     }),
     []
   );
 
-  useFrame(state => {
+  useFrame((state) => {
     const { clock } = state;
 
-    points.current.material.uniforms.uTime.value = clock.elapsedTime;
+    points.current.material.uniforms.uTime.value = clock.elapsedTime / 100;
   });
 
   return (
-    <points ref={points}>
+    <points ref={points} position={[0, 0, -20]} rotation={[-1, 0, 0]}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -64,6 +64,8 @@ const _ = ({ count }: { count: number }) => {
         fragmentShader={fragmentShader}
         vertexShader={vertexShader}
         uniforms={uniforms}
+        opacity={0.1}
+        transparent
       />
     </points>
   );
